@@ -30,3 +30,10 @@ capacidade de deduplicar sem expor o identificador original; o resultado ainda
 markup, espaços e lowercase. **Motivo:** Spark não oferece uma expressão
 nativa equivalente à normalização Unicode NFKC completa; limitar o UDF à
 operação não disponível nativamente reduz o custo de serialização.
+
+## ADR-006 — Kafka com `availableNow`
+
+**Decisão:** consumir Kafka em Structured Streaming com `availableNow` agendado
+a cada 15 minutos. **Motivo:** o Serverless processa backlog sem manter compute
+contínuo e checkpoints persistentes preservam offsets. A Silver usa `MERGE`
+idempotente para tolerar reprocessamento de micro-batches.
