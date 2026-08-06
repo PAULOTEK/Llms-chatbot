@@ -5,10 +5,11 @@ dbutils.widgets.text("data_execucao", "")
 # COMMAND ----------
 
 from conversas_ia.comum.config import carregar_ambiente
-from conversas_ia.comum.linhagem import registro_execucao, gravar_linhagem
+from conversas_ia.comum.linhagem import gravar_linhagem, registrar_inicio, registro_execucao
 from conversas_ia.transformacao.gold_analitico import dimensao_canal, fato_conversa
 
 ambiente, data_execucao = dbutils.widgets.get("ambiente"), dbutils.widgets.get("data_execucao")
+registrar_inicio("04_gold_analitico")
 config = carregar_ambiente("/Workspace/Repos/conversas-ia/config/ambientes.yml", ambiente)
 base = f'{config["catalogo"]}.{config["schemas"]}'
 

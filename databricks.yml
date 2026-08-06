@@ -16,6 +16,8 @@ variables:
     default: ""
   catalogo:
     default: conversas_dev
+  versao:
+    description: Versão do pacote publicada no job
 
 targets:
   dev:

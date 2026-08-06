@@ -5,11 +5,12 @@ dbutils.widgets.text("data_execucao", "")
 # COMMAND ----------
 
 from conversas_ia.comum.config import carregar_ambiente, carregar_yaml
-from conversas_ia.comum.linhagem import gravar_linhagem, registro_execucao
+from conversas_ia.comum.linhagem import gravar_linhagem, registrar_inicio, registro_execucao
 from conversas_ia.streaming.kafka_bronze import escrever_stream_bronze, ler_stream_kafka
 
 ambiente = dbutils.widgets.get("ambiente")
 data_execucao = dbutils.widgets.get("data_execucao")
+registrar_inicio("06_streaming_bronze_kafka")
 config = carregar_ambiente("/Workspace/Repos/conversas-ia/config/ambientes.yml", ambiente)
 pipeline = carregar_yaml("/Workspace/Repos/conversas-ia/config/pipeline.yml")
 
