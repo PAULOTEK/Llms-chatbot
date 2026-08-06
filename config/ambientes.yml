@@ -1,0 +1,15 @@
+dev:
+  catalogo: conversas_dev
+  schemas: {bronze: bronze, silver: silver, gold: gold, governanca: governanca}
+  paths: {landing: /Volumes/conversas_dev/landing, checkpoint: /Volumes/conversas_dev/checkpoints}
+  jdbc: {url: jdbc:postgresql://localhost:5432/conversas, tabela: public.atendimentos}
+hml:
+  catalogo: conversas_hml
+  schemas: {bronze: bronze, silver: silver, gold: gold, governanca: governanca}
+  paths: {landing: /Volumes/conversas_hml/landing, checkpoint: /Volumes/conversas_hml/checkpoints}
+  jdbc: {url: jdbc:postgresql://localhost:5432/conversas, tabela: public.atendimentos}
+prd:
+  catalogo: conversas_prd
+  schemas: {bronze: bronze, silver: silver, gold: gold, governanca: governanca}
+  paths: {landing: /Volumes/conversas_prd/landing, checkpoint: /Volumes/conversas_prd/checkpoints}
+  jdbc: {url: jdbc:postgresql://localhost:5432/conversas, tabela: public.atendimentos}

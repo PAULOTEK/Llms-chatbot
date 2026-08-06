@@ -1,0 +1,37 @@
+bundle:
+  name: conversas-ia
+
+include:
+  - resources/*.yml
+
+artifacts:
+  default:
+    type: whl
+    build: python -m build --wheel
+    path: .
+
+variables:
+  databricks_host:
+    description: Host do workspace Databricks
+    default: ""
+  catalogo:
+    default: conversas_dev
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: ${var.databricks_host}
+    variables:
+      catalogo: conversas_dev
+  hml:
+    workspace:
+      host: ${var.databricks_host}
+    variables:
+      catalogo: conversas_hml
+  prd:
+    workspace:
+      host: ${var.databricks_host}
+    variables:
+      catalogo: conversas_prd

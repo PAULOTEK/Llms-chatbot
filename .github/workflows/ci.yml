@@ -1,0 +1,36 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: pip install ".[dev]"
+      - run: ruff check .
+      - run: black --check .
+      - run: pytest -q
+      - name: Validar YAMLs
+        run: >-
+          python -c "import pathlib,yaml;
+          [yaml.safe_load(p.read_text()) for p in pathlib.Path('.').rglob('*')
+          if p.suffix in ('.yml','.yaml') and '.venv' not in p.parts]"
+  bundle_validate:
+    if: ${{ vars.DATABRICKS_HOST != '' && secrets.DATABRICKS_TOKEN != '' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@v0.236.0
+      - name: Validar bundle Databricks
+        run: databricks bundle validate -t dev
+        env:
+          DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}

@@ -1,0 +1,5 @@
+tabela: dataset_sft
+regras:
+  - {nome: prompt_obrigatorio, tipo: not_null, coluna: prompt, severidade: critica}
+  - {nome: resposta_obrigatoria, tipo: not_null, coluna: resposta, severidade: critica}
+  - {nome: split_valido, tipo: dominio, coluna: split, valores: [treino, validacao, teste], severidade: critica}
