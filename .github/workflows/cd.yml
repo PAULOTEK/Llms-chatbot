@@ -6,7 +6,6 @@ permissions:
   contents: read
 jobs:
   deploy:
-    if: ${{ vars.DATABRICKS_HOST != '' && secrets.DATABRICKS_TOKEN != '' }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -15,8 +14,22 @@ jobs:
           python-version: "3.11"
           cache: pip
       - run: pip install ".[dev]" build
+      - name: Verificar credenciais Databricks
+        id: credenciais
+        env:
+          DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          if [[ -n "$DATABRICKS_HOST" && -n "$DATABRICKS_TOKEN" ]]; then
+            echo "disponivel=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "disponivel=false" >> "$GITHUB_OUTPUT"
+            echo "Deploy pulado: credenciais Databricks não configuradas."
+          fi
       - uses: databricks/setup-cli@v0.236.0
+        if: steps.credenciais.outputs.disponivel == 'true'
       - run: databricks bundle deploy -t prd --var versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
+        if: steps.credenciais.outputs.disponivel == 'true'
         env:
           DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
