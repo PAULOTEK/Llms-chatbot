@@ -1,0 +1,6 @@
+tabela: silver_turnos
+regras:
+  - {nome: conversa_id_obrigatorio, tipo: not_null, coluna: conversa_id, severidade: critica}
+  - {nome: papel_valido, tipo: dominio, coluna: papel, valores: [user, assistant, system], severidade: critica}
+  - {nome: texto_obrigatorio, tipo: not_null, coluna: texto, severidade: critica}
+  - {nome: idioma_pt, tipo: regex, coluna: idioma, padrao: "^[a-z]{2}$", severidade: advertencia}

@@ -1,0 +1,22 @@
+name: CD Databricks
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  deploy:
+    if: ${{ vars.DATABRICKS_HOST != '' && secrets.DATABRICKS_TOKEN != '' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install ".[dev]" build
+      - uses: databricks/setup-cli@v0.236.0
+      - run: databricks bundle deploy -t prd
+        env:
+          DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}

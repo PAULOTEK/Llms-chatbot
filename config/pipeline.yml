@@ -1,0 +1,11 @@
+lgpd:
+  salt_env: CONVERSAS_PII_SALT
+  anonimizar: true
+  detectar_nomes: true
+qualidade:
+  severidade_falha: critica
+  permitir_quarentena: true
+datasets:
+  minimo_turnos: 2
+  splits: {treino: 0.8, validacao: 0.1, teste: 0.1}
+  idiomas: [pt]
