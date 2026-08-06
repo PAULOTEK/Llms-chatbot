@@ -6,6 +6,14 @@ o projeto segue [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+
+## [0.2.1] - 2026-08-06
+
+### Fixed
+
+- Gates de credenciais Databricks nos workflows: o contexto `secrets` não é
+  avaliável em `if:` de job, o que invalidava `ci.yml` e `cd.yml`.
+
 ## [0.2.0] - 2026-08-06
 
 ### Added
