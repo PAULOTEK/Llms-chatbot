@@ -10,6 +10,7 @@ flowchart LR
   API[API REST] --> B[Bronze Delta]
   JDBC[JDBC] --> B
   JSONL[JSONL landing] --> B
+  K[Kafka KRaft] --> B
   B --> S[Silver: turnos + LGPD + qualidade]
   S --> G1[Gold BI: fato e dimensões]
   S --> G2[Gold IA: SFT e avaliação]
@@ -30,6 +31,7 @@ flowchart LR
 | Governança e linhagem | `comum/linhagem.py`, `docs/linhagem.md`, tags UC |
 | LGPD/anonimização | `privacidade/`, `docs/governanca_lgpd.md` |
 | Datasets LLM | `gold_datasets_ia.py`: SFT e splits determinísticos |
+| Kafka/near real-time | `streaming/kafka_bronze.py`, Structured Streaming e Silver `foreachBatch` |
 | Git/CI/CD | `.github/workflows/ci.yml` e `cd.yml` |
 
 ## Execução local
@@ -82,4 +84,7 @@ airflow/         DAG, Dockerfile, Compose e variáveis
 sql/             DDL Unity Catalog e analytics
 tests/           testes Spark locais
 docs/            arquitetura, LGPD, qualidade, ADRs e linhagem
+streaming/       Kafka KRaft local e produtor sintético
 ```
+
+Detalhes da camada near real-time estão em [`docs/streaming.md`](docs/streaming.md).

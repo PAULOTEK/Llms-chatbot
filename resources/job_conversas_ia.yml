@@ -52,3 +52,32 @@ resources:
             # de Serverless Jobs; a wheel é instalada uma única vez aqui.
             client: "1"
             dependencies: ["../dist/*.whl"]
+    job_conversas_ia_streaming:
+      name: conversas-ia-streaming-available-now
+      max_concurrent_runs: 1
+      schedule:
+        quartz_cron_expression: "0 0/15 * * * ?"
+        timezone_id: America/Sao_Paulo
+        pause_status: UNPAUSED
+      parameters:
+        - name: ambiente
+          default: ${bundle.target}
+        - name: data_execucao
+          default: "{{job.start_time.iso_date}}"
+      email_notifications:
+        on_failure:
+          - dados@exemplo.com
+      tasks:
+        - task_key: streaming_bronze_kafka
+          notebook_task:
+            notebook_path: ../notebooks/06_streaming_bronze_kafka.py
+            base_parameters:
+              ambiente: "{{job.parameters.ambiente}}"
+              data_execucao: "{{job.parameters.data_execucao}}"
+          environment_key: serverless
+      environments:
+        - environment_key: serverless
+          spec:
+            # Client 1 é a versão conservadora documentada para Serverless Jobs.
+            client: "1"
+            dependencies: ["../dist/*.whl"]
