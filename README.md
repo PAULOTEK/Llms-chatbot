@@ -1,5 +1,7 @@
 # Lakehouse Conversacional para IA
 
+[![Release](https://img.shields.io/github/v/release/PAULOTEK/Llms-chatbot?display_name=tag)](https://github.com/PAULOTEK/Llms-chatbot/releases)
+
 Projeto-portfólio de Engenharia de Dados para ingestão, tratamento LGPD,
 governança e preparação de dados conversacionais para BI e LLMs.
 
@@ -88,3 +90,4 @@ streaming/       Kafka KRaft local e produtor sintético
 ```
 
 Detalhes da camada near real-time estão em [`docs/streaming.md`](docs/streaming.md).
+A política de versões e releases está em [`docs/versionamento.md`](docs/versionamento.md).

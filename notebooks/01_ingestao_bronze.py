@@ -5,11 +5,12 @@ dbutils.widgets.text("data_execucao", "")
 # COMMAND ----------
 
 from conversas_ia.comum.config import carregar_ambiente, carregar_yaml
-from conversas_ia.comum.linhagem import registro_execucao, gravar_linhagem
+from conversas_ia.comum.linhagem import gravar_linhagem, registrar_inicio, registro_execucao
 from conversas_ia.ingestao.arquivos_jsonl import ler_jsonl, escrever_bronze
 
 ambiente = dbutils.widgets.get("ambiente")
 data_execucao = dbutils.widgets.get("data_execucao")
+registrar_inicio("01_ingestao_bronze")
 config = carregar_ambiente("/Workspace/Repos/conversas-ia/config/ambientes.yml", ambiente)
 pipeline = carregar_yaml("/Workspace/Repos/conversas-ia/config/pipeline.yml")
 
