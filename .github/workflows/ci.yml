@@ -85,7 +85,7 @@ jobs:
             echo "disponivel=false" >> "$GITHUB_OUTPUT"
             echo "Bundle validate pulado por credenciais ausentes."
           fi
-      - uses: databricks/setup-cli@v0.236.0
+      - uses: databricks/setup-cli@v0.299.2
         if: steps.credenciais.outputs.disponivel == 'true'
       - name: Validar bundle Databricks
         if: steps.credenciais.outputs.disponivel == 'true'
