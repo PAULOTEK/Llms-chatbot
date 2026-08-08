@@ -6,6 +6,12 @@ o projeto segue [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-08-08
+
+### Fixed
+
+- Corrige a passagem da versão ao Databricks Bundle usando a opção `--var`.
+
 ## [0.2.2] - 2026-08-08
 
 ### Fixed

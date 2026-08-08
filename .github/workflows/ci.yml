@@ -90,9 +90,8 @@ jobs:
       - name: Validar bundle Databricks
         if: steps.credenciais.outputs.disponivel == 'true'
         run: |
-          export DATABRICKS_BUNDLE_VAR_versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
           set +e
-          saida="$(databricks bundle validate -t dev 2>&1)"
+          saida="$(databricks bundle validate -t dev --var versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')" 2>&1)"
           status=$?
           set -e
           saida_segura="${saida//$DATABRICKS_HOST/[DATABRICKS_HOST]}"

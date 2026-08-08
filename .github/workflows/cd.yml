@@ -48,8 +48,7 @@ jobs:
         if: steps.credenciais.outputs.disponivel == 'true'
       - name: Publicar Bundle
         run: |
-          export DATABRICKS_BUNDLE_VAR_versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
-          databricks bundle deploy -t prd
+          databricks bundle deploy -t prd --var versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
         if: steps.credenciais.outputs.disponivel == 'true'
       - name: Executar job batch sob demanda
         if: >-
@@ -57,5 +56,4 @@ jobs:
           github.event_name == 'workflow_dispatch' &&
           inputs.executar_job == true
         run: |
-          export DATABRICKS_BUNDLE_VAR_versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
-          databricks bundle run job_conversas_ia -t prd
+          databricks bundle run job_conversas_ia -t prd --var versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
