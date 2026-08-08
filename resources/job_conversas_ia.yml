@@ -56,6 +56,8 @@ resources:
             client: "2"
             dependencies: ["../dist/*.whl"]
     job_conversas_ia_streaming:
+      # Requer broker Kafka acessível pelo Databricks; a demonstração local
+      # near real-time é executada via Docker Compose.
       name: conversas-ia-streaming-available-now
       tags: {versao: "${var.versao}"}
       max_concurrent_runs: 1

@@ -21,6 +21,13 @@ O job Databricks usa `availableNow` a cada 15 minutos. Essa escolha é adequada
 ao Serverless, processa o backlog disponível e encerra o micro-batch, evitando
 manter um cluster contínuo ocioso.
 
+O job Databricks só funciona quando `bootstrap_servers` aponta para um broker
+Kafka acessível a partir da rede do workspace. O Kafka de desenvolvimento não
+é exposto automaticamente ao Databricks; portanto, a demonstração
+near real-time executável e reproduzível deste projeto usa o Docker Compose
+local abaixo. Não se deve interpretar o recurso Databricks como um broker
+gerenciado ou acessível sem configuração adicional de rede.
+
 ## Exactly-once e idempotência
 
 O checkpoint do Structured Streaming registra offsets Kafka processados.

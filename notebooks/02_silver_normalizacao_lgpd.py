@@ -38,7 +38,12 @@ raw = spark.table(f"{base['bronze']}.conversas_raw")
 turnos = explodir_turnos(raw)
 turnos = normalizar_mensagens(turnos)
 turnos = deduplicar_turnos(turnos)
-turnos = enriquecer_turnos(turnos, pipeline.get("lgpd", {}).get("salt_env", "salt"))
+lgpd = pipeline.get("lgpd", {})
+turnos = enriquecer_turnos(
+    turnos,
+    lgpd.get("salt_env", "salt"),
+    lgpd.get("anonimizacao_modo", "nativo"),
+)
 destino = f"{base['silver']}.turnos"
 turnos.write.mode("append").format("delta").saveAsTable(destino)
 gravar_linhagem(

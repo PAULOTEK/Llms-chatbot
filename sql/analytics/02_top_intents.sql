@@ -6,8 +6,8 @@ WITH classificadas AS (
            WHEN LOWER(prompt) RLIKE 'entrega|pedido|rastreamento' THEN 'pedido'
            ELSE 'outros'
          END AS intent
-  FROM conversas_dev.gold.dataset_sft
-  JOIN conversas_dev.gold.fato_conversa USING (conversa_id)
+  FROM workspace.gold.dataset_sft
+  JOIN workspace.gold.fato_conversa USING (conversa_id)
 ),
 ranking AS (
   SELECT dia, intent, COUNT(*) AS volume,

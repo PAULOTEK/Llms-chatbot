@@ -3,7 +3,7 @@ WITH etapas AS (
          MAX(CASE WHEN papel = 'user' THEN 1 ELSE 0 END) AS iniciou,
          MAX(CASE WHEN papel = 'assistant' THEN 1 ELSE 0 END) AS recebeu_resposta,
          MAX(CASE WHEN papel = 'assistant' AND resolvida THEN 1 ELSE 0 END) AS resolveu
-  FROM conversas_dev.silver.turnos
+  FROM workspace.silver.turnos
   GROUP BY conversa_id
 )
 SELECT COUNT(*) AS conversas,

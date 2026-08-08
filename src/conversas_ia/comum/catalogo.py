@@ -11,7 +11,7 @@ def preparar_catalogo(spark: SparkSession, raiz_projeto: str, catalogo: str) -> 
     for trecho in conteudo.split(";"):
         comando = trecho.strip()
         if re.match(r"^CREATE\s+(CATALOG|SCHEMA|VOLUME)\b", comando, re.IGNORECASE):
-            sql = re.sub(r"\bconversas_dev\b", catalogo, comando)
+            sql = re.sub(r"\b__CATALOG__\b", catalogo, comando)
             try:
                 spark.sql(sql)
             except Exception as exc:

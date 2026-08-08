@@ -57,8 +57,10 @@ def deduplicar_turnos(df: DataFrame) -> DataFrame:
     )
 
 
-def enriquecer_turnos(df: DataFrame, salt: str = "salt") -> DataFrame:
-    df = anonimizar_texto(df, "texto", salt)
+def enriquecer_turnos(
+    df: DataFrame, salt: str = "salt", modo_anonimizacao: str = "python"
+) -> DataFrame:
+    df = anonimizar_texto(df, "texto", salt, modo_anonimizacao)
     toxicos = ["ódio", "ameaça", "violência"]
     tox = F.lower(F.col("texto"))
     return (

@@ -6,6 +6,15 @@ o projeto segue [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-08-08
+
+### Fixed
+
+- Preserva a pseudonimização determinística de PII com tokens derivados do
+  salt também no runtime Databricks Serverless.
+- Alinha checkpoints e exemplos SQL de streaming ao catálogo configurado e
+  documenta o requisito de broker Kafka acessível no Databricks.
+
 ## [0.2.5] - 2026-08-08
 
 ### Fixed

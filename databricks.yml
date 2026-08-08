@@ -12,7 +12,7 @@ artifacts:
 
 variables:
   catalogo:
-    default: conversas_dev
+    default: workspace
   versao:
     description: Versão do pacote publicada no job
 

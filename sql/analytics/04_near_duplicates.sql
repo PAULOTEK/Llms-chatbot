@@ -2,7 +2,7 @@ WITH normalizado AS (
   SELECT conversa_id, turno_id, texto,
          LAG(texto) OVER (PARTITION BY idioma ORDER BY _conteudo_hash) AS texto_anterior,
          LAG(_conteudo_hash) OVER (PARTITION BY idioma ORDER BY _conteudo_hash) AS hash_anterior
-  FROM conversas_dev.silver.turnos
+  FROM workspace.silver.turnos
   WHERE texto IS NOT NULL
 ),
 marcados AS (

@@ -1,5 +1,4 @@
 import hashlib
-import os
 import re
 
 from pyspark.sql import DataFrame
@@ -10,6 +9,21 @@ from conversas_ia.privacidade.deteccao_pii import PADROES, detectar_tipos
 
 _ORDEM_PADROES = ("email", "cartao", "cnpj", "cpf", "telefone")
 _PADRAO_COMBINADO = "|".join(f"(?P<{tipo}>{PADROES[tipo]})" for tipo in _ORDEM_PADROES)
+
+
+def _substituidor_nativo(tipo: str, salt: str):
+    def substituir(acumulado, valor):
+        return F.regexp_replace(
+            acumulado,
+            valor,
+            F.concat(
+                F.lit(f"[{tipo.upper()}_"),
+                F.substring(F.sha2(F.concat(F.lit(salt), valor), 256), 1, 10),
+                F.lit("]"),
+            ),
+        )
+
+    return substituir
 
 
 def substituir_pii(texto: str | None, salt: str) -> str | None:
@@ -25,17 +39,35 @@ def substituir_pii(texto: str | None, salt: str) -> str | None:
     return re.sub(_PADRAO_COMBINADO, substituir, texto)
 
 
-def anonimizar_texto(df: DataFrame, coluna: str = "texto", salt: str = "salt") -> DataFrame:
+def _anonimizar_nativo(original, salt: str):
+    anonimizado = original
+    for tipo in _ORDEM_PADROES:
+        ocorrencias = F.array_distinct(F.regexp_extract_all(original, F.lit(PADROES[tipo]), 0))
+        anonimizado = F.aggregate(
+            ocorrencias,
+            anonimizado,
+            _substituidor_nativo(tipo, salt),
+        )
+    return anonimizado
+
+
+def anonimizar_texto(
+    df: DataFrame,
+    coluna: str = "texto",
+    salt: str = "salt",
+    modo: str = "python",
+) -> DataFrame:
+    """Anonimiza PII com UDF local ou expressões nativas determinísticas.
+
+    O modo ``nativo`` é necessário para Unity Catalog Serverless, onde Python
+    UDFs são rejeitadas. Ambos os modos derivam o token do salt e do valor.
+    """
     original = F.col(coluna)
-    if os.getenv("DATABRICKS_RUNTIME_VERSION") or os.getenv("SPARK_CONNECT_MODE_ENABLED"):
-        anonimizado = original
-        for tipo in _ORDEM_PADROES:
-            anonimizado = F.regexp_replace(
-                anonimizado,
-                PADROES[tipo],
-                f"[{tipo.upper()}_REDACTED]",
-            )
-    else:
+    if modo == "python":
         anonimizar = F.udf(lambda texto: substituir_pii(texto, salt), StringType())
         anonimizado = anonimizar(original)
+    elif modo == "nativo":
+        anonimizado = _anonimizar_nativo(original, salt)
+    else:
+        raise ValueError(f"Modo de anonimização desconhecido: {modo}")
     return df.withColumn("pii_detectada", detectar_tipos(original)).withColumn(coluna, anonimizado)
