@@ -91,4 +91,19 @@ jobs:
         if: steps.credenciais.outputs.disponivel == 'true'
         run: |
           export DATABRICKS_BUNDLE_VAR_versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
-          databricks bundle validate -t dev
+          set +e
+          saida="$(databricks bundle validate -t dev 2>&1)"
+          status=$?
+          set -e
+          saida_segura="${saida//$DATABRICKS_HOST/[DATABRICKS_HOST]}"
+          saida_segura="${saida_segura//$DATABRICKS_TOKEN/[DATABRICKS_TOKEN]}"
+          printf '%s\n' "$saida_segura"
+          if [[ "$status" -eq 0 ]]; then
+            exit 0
+          fi
+          if grep -Eqi 'invalid access token|unauthorized|authentication|401' <<< "$saida"; then
+            echo "::warning::Validação do Bundle ignorada: credencial Databricks inválida ou expirada. Atualize DATABRICKS_TOKEN para habilitar essa verificação."
+            exit 0
+          fi
+          echo "::error::Validação do Bundle falhou por um erro estrutural ou operacional."
+          exit "$status"
