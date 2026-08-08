@@ -46,11 +46,11 @@ jobs:
           fi
       - uses: databricks/setup-cli@v0.236.0
         if: steps.credenciais.outputs.disponivel == 'true'
-      - run: databricks bundle deploy -t prd --var versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
+      - run: databricks bundle deploy -t prd --var databricks_host="$DATABRICKS_HOST" --var versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
         if: steps.credenciais.outputs.disponivel == 'true'
       - name: Executar job batch sob demanda
         if: >-
           steps.credenciais.outputs.disponivel == 'true' &&
           github.event_name == 'workflow_dispatch' &&
           inputs.executar_job == true
-        run: databricks bundle run job_conversas_ia -t prd --var versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
+        run: databricks bundle run job_conversas_ia -t prd --var databricks_host="$DATABRICKS_HOST" --var versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
