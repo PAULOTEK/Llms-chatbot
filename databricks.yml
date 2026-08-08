@@ -11,9 +11,6 @@ artifacts:
     path: .
 
 variables:
-  databricks_host:
-    description: Host do workspace Databricks
-    default: ""
   catalogo:
     default: conversas_dev
   versao:
@@ -24,16 +21,16 @@ targets:
     mode: development
     default: true
     workspace:
-      host: ${var.databricks_host}
+      host: ${env.DATABRICKS_HOST}
     variables:
       catalogo: conversas_dev
   hml:
     workspace:
-      host: ${var.databricks_host}
+      host: ${env.DATABRICKS_HOST}
     variables:
       catalogo: conversas_hml
   prd:
     workspace:
-      host: ${var.databricks_host}
+      host: ${env.DATABRICKS_HOST}
     variables:
       catalogo: conversas_prd
