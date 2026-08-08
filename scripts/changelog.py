@@ -5,10 +5,23 @@ import re
 from pathlib import Path
 
 
-def extrair_secao(conteudo: str, versao: str) -> str:
+def extrair_secao(
+    conteudo: str,
+    versao: str,
+    se_ausente_usar_generico: bool = False,
+    repositorio: str | None = None,
+) -> str:
     padrao = re.compile(rf"^## \[{re.escape(versao)}\].*$", re.MULTILINE)
     inicio = padrao.search(conteudo)
     if not inicio:
+        if se_ausente_usar_generico:
+            repositorio = repositorio or "PAULOTEK/Llms-chatbot"
+            comparacao = f"https://github.com/{repositorio}/compare/main...v{versao}"
+            return (
+                f"## [{versao}]\n\n"
+                f"Release v{versao} sem seção específica no CHANGELOG.\n\n"
+                f"Comparação: {comparacao}"
+            )
         raise ValueError(f"Seção [{versao}] não encontrada no CHANGELOG.")
     proxima = re.search(r"^## \[", conteudo[inicio.end() :], re.MULTILINE)
     fim = inicio.end() + proxima.start() if proxima else len(conteudo)
@@ -19,8 +32,17 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", required=True)
     parser.add_argument("--arquivo", default="CHANGELOG.md")
+    parser.add_argument("--se-ausente-usar-generico", action="store_true")
+    parser.add_argument("--repositorio", default=None)
     args = parser.parse_args()
-    print(extrair_secao(Path(args.arquivo).read_text(encoding="utf-8"), args.version))
+    print(
+        extrair_secao(
+            Path(args.arquivo).read_text(encoding="utf-8"),
+            args.version,
+            args.se_ausente_usar_generico,
+            args.repositorio,
+        )
+    )
 
 
 if __name__ == "__main__":

@@ -34,3 +34,24 @@ databricks bundle deploy -t prd --var versao="$(python -c 'import tomllib; print
 Jobs Databricks recebem a tag `versao`, e cada registro de linhagem contém
 `versao_pacote` e `git_sha`. Assim é possível identificar a versão em execução
 por branch, merge ou job publicado.
+
+## Credenciais e execução manual
+
+No GitHub Actions, configure:
+
+- `DATABRICKS_HOST`: pode ser uma **Variable** ou um **Secret**;
+- `DATABRICKS_TOKEN`: deve ser um **Secret**.
+
+O workflow aceita ambos os locais para o host, priorizando a Variable. O valor
+resolvido não é impresso nos logs; quando faltar, o workflow informa apenas se
+faltou `DATABRICKS_HOST` ou `DATABRICKS_TOKEN`.
+
+Para publicar o Bundle e executar o pipeline batch sem esperar o schedule das
+02:00, abra **Actions → CD Databricks → Run workflow**, selecione a branch
+`main` e marque `executar_job`. Com a opção desmarcada, o workflow faz somente
+o deploy.
+
+Se uma versão não tiver seção no changelog, o release automático usa notas
+genéricas com link de comparação. O extrator local continua estrito por
+padrão; use `--se-ausente-usar-generico` somente quando esse comportamento for
+desejado.

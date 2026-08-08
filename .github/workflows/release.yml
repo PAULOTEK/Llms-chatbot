@@ -22,7 +22,8 @@ jobs:
         run: |
           VERSION="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          python scripts/changelog.py --version "$VERSION" > release-notes.md
+          python scripts/changelog.py --version "$VERSION" --se-ausente-usar-generico \
+            --repositorio "$GITHUB_REPOSITORY" > release-notes.md
       - name: Encerrar se tag já existir
         id: tag
         env:

@@ -72,8 +72,13 @@ databricks bundle deploy -t dev
 databricks bundle run job_conversas_ia -t dev
 ```
 
-Configure `DATABRICKS_HOST` e `DATABRICKS_TOKEN` no ambiente. Targets:
-`dev`, `hml`, `prd`.
+Configure `DATABRICKS_HOST` como **Variable ou Secret** e
+`DATABRICKS_TOKEN` como **Secret**. Targets: `dev`, `hml`, `prd`.
+
+No GitHub Actions, o workflow `CD Databricks` também pode ser disparado
+manualmente em **Actions → CD Databricks → Run workflow**. Marque
+`executar_job` para executar `job_conversas_ia` no Serverless imediatamente
+após o deploy; deixe desmarcado para somente publicar o Bundle.
 
 ## Estrutura
 

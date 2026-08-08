@@ -24,3 +24,23 @@ def test_bump_move_unreleased(tmp_path: Path):
 def test_extrator_changelog():
     conteudo = "## [Unreleased]\n\nx\n\n## [0.2.0] - 2024-01-01\n\nstreaming\n"
     assert extrair_secao(conteudo, "0.2.0") == "## [0.2.0] - 2024-01-01\n\nstreaming"
+
+
+def test_extrator_changelog_ausente_falha_por_padrao():
+    try:
+        extrair_secao("## [Unreleased]\n", "9.9.9")
+    except ValueError as erro:
+        assert "9.9.9" in str(erro)
+    else:
+        raise AssertionError("seção ausente deveria falhar no modo estrito")
+
+
+def test_extrator_changelog_ausente_usa_nota_generica():
+    notas = extrair_secao(
+        "## [Unreleased]\n",
+        "9.9.9",
+        se_ausente_usar_generico=True,
+        repositorio="exemplo/projeto",
+    )
+    assert "Release v9.9.9" in notas
+    assert "https://github.com/exemplo/projeto/compare/main...v9.9.9" in notas

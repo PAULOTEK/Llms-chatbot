@@ -65,20 +65,28 @@ jobs:
       - name: Verificar credenciais Databricks
         id: credenciais
         env:
-          DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+          DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST || secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          if [[ -n "$DATABRICKS_HOST" && -n "$DATABRICKS_TOKEN" ]]; then
+          disponivel=true
+          if [[ -z "$DATABRICKS_HOST" ]]; then
+            echo "Credencial ausente: DATABRICKS_HOST (configure como Variable ou Secret)."
+            disponivel=false
+          fi
+          if [[ -z "$DATABRICKS_TOKEN" ]]; then
+            echo "Credencial ausente: DATABRICKS_TOKEN (configure como Secret)."
+            disponivel=false
+          fi
+          if [[ "$disponivel" == true ]]; then
+            printf 'DATABRICKS_HOST=%s\n' "$DATABRICKS_HOST" >> "$GITHUB_ENV"
+            printf 'DATABRICKS_TOKEN=%s\n' "$DATABRICKS_TOKEN" >> "$GITHUB_ENV"
             echo "disponivel=true" >> "$GITHUB_OUTPUT"
           else
             echo "disponivel=false" >> "$GITHUB_OUTPUT"
-            echo "Bundle validate pulado: credenciais Databricks não configuradas."
+            echo "Bundle validate pulado por credenciais ausentes."
           fi
       - uses: databricks/setup-cli@v0.236.0
         if: steps.credenciais.outputs.disponivel == 'true'
       - name: Validar bundle Databricks
         if: steps.credenciais.outputs.disponivel == 'true'
         run: databricks bundle validate -t dev --var versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
-        env:
-          DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
