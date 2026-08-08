@@ -6,6 +6,15 @@ o projeto segue [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-08-08
+
+### Fixed
+
+- Aceita `DATABRICKS_HOST` como Variable ou Secret, com diagnóstico seguro de
+  credenciais ausentes.
+- Adiciona execução manual do job Databricks após o deploy.
+- Torna as notas de release resilientes quando uma seção do changelog estiver
+  ausente.
 
 ## [0.2.1] - 2026-08-06
 
