@@ -20,17 +20,11 @@ targets:
   dev:
     mode: development
     default: true
-    workspace:
-      host: ${env.DATABRICKS_HOST}
     variables:
       catalogo: conversas_dev
   hml:
-    workspace:
-      host: ${env.DATABRICKS_HOST}
     variables:
       catalogo: conversas_hml
   prd:
-    workspace:
-      host: ${env.DATABRICKS_HOST}
     variables:
       catalogo: conversas_prd
