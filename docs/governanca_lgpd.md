@@ -15,6 +15,13 @@ hash com salt secreto. A pseudonimização determinística permite deduplicaçã
 mas não elimina o caráter pessoal: salt, acesso e reversibilidade operacional
 devem ser protegidos. Datasets IA exigem ausência de PII residual.
 
+Em Unity Catalog Serverless, o pipeline usa `lgpd.anonimizacao_modo: nativo`
+para evitar Python UDFs não suportadas. O modo nativo extrai cada ocorrência,
+calcula `sha2(salt || valor)` e substitui todas as ocorrências pelo token
+`[TIPO_<hash>]`. O modo `python` permanece disponível para testes locais e
+mantém a mesma regra determinística; não há seleção implícita por variável de
+ambiente.
+
 ## Retenção e direitos
 
 Defina retenção por finalidade, com expurgo periódico de Bronze e quarentena.

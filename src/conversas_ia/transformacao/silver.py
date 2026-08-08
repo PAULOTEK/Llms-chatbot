@@ -3,7 +3,6 @@ import unicodedata
 
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
-from pyspark.sql.types import StringType
 
 from conversas_ia.privacidade.anonimizacao import anonimizar_texto
 
@@ -20,13 +19,9 @@ def normalizar_texto(valor: str | None, lowercase: bool = False) -> str | None:
 def normalizar_mensagens(
     df: DataFrame, coluna: str = "texto", lowercase: bool = False
 ) -> DataFrame:
-    # NFKC não possui equivalente completo em expressões Spark; isole o UDF
-    # Unicode e mantenha markup/espaços/lowercase em funções nativas.
-    normalizar_unicode = F.udf(
-        lambda valor: unicodedata.normalize("NFKC", valor) if valor is not None else None,
-        StringType(),
-    )
-    texto = normalizar_unicode(F.col(coluna))
+    # Mantenha a transformação em expressões nativas: Python UDF não é
+    # suportada em tabelas Unity Catalog executadas em Serverless.
+    texto = F.col(coluna)
     texto = F.regexp_replace(texto, r"<[^>]+>", " ")
     texto = F.trim(F.regexp_replace(texto, r"\s+", " "))
     if lowercase:
@@ -62,8 +57,10 @@ def deduplicar_turnos(df: DataFrame) -> DataFrame:
     )
 
 
-def enriquecer_turnos(df: DataFrame, salt: str = "salt") -> DataFrame:
-    df = anonimizar_texto(df, "texto", salt)
+def enriquecer_turnos(
+    df: DataFrame, salt: str = "salt", modo_anonimizacao: str = "python"
+) -> DataFrame:
+    df = anonimizar_texto(df, "texto", salt, modo_anonimizacao)
     toxicos = ["ódio", "ameaça", "violência"]
     tox = F.lower(F.col("texto"))
     return (

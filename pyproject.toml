@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "conversas-ia"
-version = "0.2.2"
+version = "0.2.7"
 description = "Lakehouse conversacional para preparação de dados de LLM"
 requires-python = ">=3.10"
 dependencies = ["pyspark>=3.5,<4", "PyYAML>=6", "requests>=2.31,<3"]

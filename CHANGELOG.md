@@ -6,6 +6,46 @@ o projeto segue [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+## [0.2.7] - 2026-08-08
+
+### Fixed
+
+- Escapa valores de PII antes de usá-los como padrão de substituição no modo
+  nativo, evitando que metacaracteres de e-mails, CPFs e telefones alterem o
+  casamento da expressão regular.
+
+## [0.2.6] - 2026-08-08
+
+### Fixed
+
+- Preserva a pseudonimização determinística de PII com tokens derivados do
+  salt também no runtime Databricks Serverless.
+- Alinha checkpoints e exemplos SQL de streaming ao catálogo configurado e
+  documenta o requisito de broker Kafka acessível no Databricks.
+
+## [0.2.5] - 2026-08-08
+
+### Fixed
+
+- Usa o catálogo `workspace` no target `dev` e tolera a criação de catálogo
+  quando o workspace já fornece um catálogo utilizável.
+
+## [0.2.4] - 2026-08-08
+
+### Fixed
+
+- Usa o canal Client 2 nos ambientes Serverless.
+- Passa a raiz do Bundle aos notebooks para localizar configurações sem
+  depender de caminhos de Repos.
+- Inicializa os objetos básicos do Unity Catalog e usa dados sintéticos quando
+  a fonte externa de ingestão não está configurada.
+
+## [0.2.3] - 2026-08-08
+
+### Fixed
+
+- Corrige a passagem da versão ao Databricks Bundle usando a opção `--var`.
+
 ## [0.2.2] - 2026-08-08
 
 ### Fixed

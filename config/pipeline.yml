@@ -1,5 +1,6 @@
 lgpd:
   salt_env: CONVERSAS_PII_SALT
+  anonimizacao_modo: nativo
   anonimizar: true
   detectar_nomes: true
 qualidade:
@@ -13,5 +14,5 @@ streaming:
   trigger: availableNow
   watermark: 10 minutes
   checkpoints:
-    bronze: /Volumes/conversas_dev/checkpoints/kafka_bronze
-    silver: /Volumes/conversas_dev/checkpoints/silver_streaming
+    bronze: /Volumes/workspace/bronze/checkpoints/kafka_bronze
+    silver: /Volumes/workspace/bronze/checkpoints/silver_streaming

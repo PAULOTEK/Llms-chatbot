@@ -85,14 +85,13 @@ jobs:
             echo "disponivel=false" >> "$GITHUB_OUTPUT"
             echo "Bundle validate pulado por credenciais ausentes."
           fi
-      - uses: databricks/setup-cli@v0.236.0
+      - uses: databricks/setup-cli@v0.299.2
         if: steps.credenciais.outputs.disponivel == 'true'
       - name: Validar bundle Databricks
         if: steps.credenciais.outputs.disponivel == 'true'
         run: |
-          export DATABRICKS_BUNDLE_VAR_versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
           set +e
-          saida="$(databricks bundle validate -t dev 2>&1)"
+          saida="$(databricks bundle validate -t dev --var versao="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')" 2>&1)"
           status=$?
           set -e
           saida_segura="${saida//$DATABRICKS_HOST/[DATABRICKS_HOST]}"
