@@ -21,7 +21,7 @@ targets:
     mode: development
     default: true
     variables:
-      catalogo: conversas_dev
+      catalogo: workspace
   hml:
     variables:
       catalogo: conversas_hml

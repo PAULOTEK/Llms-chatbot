@@ -24,12 +24,12 @@ if not raiz_projeto:
     )
 registrar_inicio("03_qualidade_quarentena")
 config = carregar_ambiente(f"{raiz_projeto}/config/ambientes.yml", ambiente)
-base = f'{config["catalogo"]}.{config["schemas"]}'
+base = {camada: f'{config["catalogo"]}.{schema}' for camada, schema in config["schemas"].items()}
 
 # COMMAND ----------
 
 turnos = spark.table(f"{base['silver']}.turnos")
-regras = carregar_regras("/Workspace/Repos/conversas-ia/config/qualidade/regras_silver.yml")
+regras = carregar_regras(f"{raiz_projeto}/config/qualidade/regras_silver.yml")
 relatorio, quarentena = executar(turnos, regras)
 relatorio.write.mode("append").format("delta").saveAsTable(
     f"{base['governanca']}.qualidade_execucoes"

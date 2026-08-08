@@ -23,7 +23,7 @@ if not raiz_projeto:
     )
 registrar_inicio("04_gold_analitico")
 config = carregar_ambiente(f"{raiz_projeto}/config/ambientes.yml", ambiente)
-base = f'{config["catalogo"]}.{config["schemas"]}'
+base = {camada: f'{config["catalogo"]}.{schema}' for camada, schema in config["schemas"].items()}
 
 # COMMAND ----------
 

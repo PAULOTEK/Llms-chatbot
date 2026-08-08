@@ -1,3 +1,5 @@
+from functools import reduce
+
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 
@@ -25,30 +27,25 @@ def _falha(df: DataFrame, regra: Regra):
 
 
 def avaliar(df: DataFrame, regras: list[Regra]) -> DataFrame:
-    expressoes = [F.count(F.lit(1)).alias("_total")]
-    for regra in regras:
-        expressoes.append(
-            F.sum(F.when(_falha(df, regra), F.lit(1)).otherwise(F.lit(0))).alias(regra.nome)
+    linhas = [
+        df.agg(
+            F.count(F.lit(1)).alias("linhas"),
+            F.coalesce(
+                F.sum(F.when(_falha(df, regra), F.lit(1)).otherwise(F.lit(0))),
+                F.lit(0),
+            ).alias("falhas"),
+        ).select(
+            F.lit(regra.nome).alias("regra"),
+            F.lit(regra.coluna).alias("coluna"),
+            F.lit(regra.tipo).alias("tipo"),
+            "linhas",
+            "falhas",
+            F.when(F.col("falhas") > 0, F.lit("falha")).otherwise(F.lit("passa")).alias("status"),
+            F.lit(regra.severidade).alias("severidade"),
         )
-    contagens = df.agg(*expressoes).first().asDict()
-    total = contagens.pop("_total")
-    resultados = []
-    for regra in regras:
-        falhas = contagens[regra.nome] or 0
-        resultados.append(
-            (
-                regra.nome,
-                regra.coluna,
-                regra.tipo,
-                total,
-                falhas,
-                "falha" if falhas else "passa",
-                regra.severidade,
-            )
-        )
-    return df.sparkSession.createDataFrame(
-        resultados, ["regra", "coluna", "tipo", "linhas", "falhas", "status", "severidade"]
-    )
+        for regra in regras
+    ]
+    return reduce(DataFrame.unionByName, linhas)
 
 
 def executar(

@@ -11,4 +11,14 @@ def preparar_catalogo(spark: SparkSession, raiz_projeto: str, catalogo: str) -> 
     for trecho in conteudo.split(";"):
         comando = trecho.strip()
         if re.match(r"^CREATE\s+(CATALOG|SCHEMA|VOLUME)\b", comando, re.IGNORECASE):
-            spark.sql(re.sub(r"\bconversas_dev\b", catalogo, comando))
+            sql = re.sub(r"\bconversas_dev\b", catalogo, comando)
+            try:
+                spark.sql(sql)
+            except Exception as exc:
+                if re.match(r"^CREATE\s+CATALOG\b", comando, re.IGNORECASE):
+                    print(
+                        "Aviso: CREATE CATALOG não executado; "
+                        f"seguindo com o catálogo existente ({exc})."
+                    )
+                    continue
+                raise

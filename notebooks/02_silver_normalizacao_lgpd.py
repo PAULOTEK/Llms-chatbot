@@ -29,8 +29,8 @@ if not raiz_projeto:
     )
 registrar_inicio("02_silver_normalizacao_lgpd")
 config = carregar_ambiente(f"{raiz_projeto}/config/ambientes.yml", ambiente)
-pipeline = carregar_yaml("/Workspace/Repos/conversas-ia/config/pipeline.yml")
-base = f'{config["catalogo"]}.{config["schemas"]}'
+pipeline = carregar_yaml(f"{raiz_projeto}/config/pipeline.yml")
+base = {camada: f'{config["catalogo"]}.{schema}' for camada, schema in config["schemas"].items()}
 
 # COMMAND ----------
 

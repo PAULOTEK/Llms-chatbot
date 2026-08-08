@@ -6,6 +6,13 @@ o projeto segue [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+## [0.2.5] - 2026-08-08
+
+### Fixed
+
+- Usa o catálogo `workspace` no target `dev` e tolera a criação de catálogo
+  quando o workspace já fornece um catálogo utilizável.
+
 ## [0.2.4] - 2026-08-08
 
 ### Fixed

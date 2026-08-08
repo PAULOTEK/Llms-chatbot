@@ -1,7 +1,7 @@
 dev:
-  catalogo: conversas_dev
+  catalogo: workspace
   schemas: {bronze: bronze, silver: silver, gold: gold, governanca: governanca}
-  paths: {landing: /Volumes/conversas_dev/landing, checkpoint: /Volumes/conversas_dev/checkpoints}
+  paths: {landing: /Volumes/workspace/bronze/landing, checkpoint: /Volumes/workspace/bronze/checkpoints}
   jdbc: {url: jdbc:postgresql://localhost:5432/conversas, tabela: public.atendimentos}
   kafka:
     bootstrap_servers: kafka:9092

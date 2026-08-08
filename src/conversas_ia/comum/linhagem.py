@@ -48,7 +48,8 @@ def registro_execucao(
 
 
 def gravar_linhagem(spark: SparkSession, registro: dict, tabela: str) -> None:
-    spark.createDataFrame([registro]).write.mode("append").format("delta").saveAsTable(tabela)
+    linha = spark.range(1).select(*(F.lit(valor).alias(chave) for chave, valor in registro.items()))
+    linha.write.mode("append").format("delta").saveAsTable(tabela)
 
 
 def adicionar_metadados_ingestao(df: DataFrame, arquivo: str, fonte: str) -> DataFrame:

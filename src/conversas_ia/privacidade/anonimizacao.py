@@ -1,4 +1,5 @@
 import hashlib
+import os
 import re
 
 from pyspark.sql import DataFrame
@@ -26,7 +27,15 @@ def substituir_pii(texto: str | None, salt: str) -> str | None:
 
 def anonimizar_texto(df: DataFrame, coluna: str = "texto", salt: str = "salt") -> DataFrame:
     original = F.col(coluna)
-    anonimizar = F.udf(lambda texto: substituir_pii(texto, salt), StringType())
-    return df.withColumn("pii_detectada", detectar_tipos(original)).withColumn(
-        coluna, anonimizar(original)
-    )
+    if os.getenv("DATABRICKS_RUNTIME_VERSION") or os.getenv("SPARK_CONNECT_MODE_ENABLED"):
+        anonimizado = original
+        for tipo in _ORDEM_PADROES:
+            anonimizado = F.regexp_replace(
+                anonimizado,
+                PADROES[tipo],
+                f"[{tipo.upper()}_REDACTED]",
+            )
+    else:
+        anonimizar = F.udf(lambda texto: substituir_pii(texto, salt), StringType())
+        anonimizado = anonimizar(original)
+    return df.withColumn("pii_detectada", detectar_tipos(original)).withColumn(coluna, anonimizado)
