@@ -79,13 +79,25 @@ def test_pii_multiplos_valores_e_telefone_nao_engole_cpf(spark):
 
 def test_pii_nativo_deterministico(spark):
     df = spark.createDataFrame(
-        [("c1", "CPF 123.456.789-00 e 987.654.321-00")], ["conversa_id", "texto"]
+        [
+            (
+                "c1",
+                "email a.b@example.com e a.b@example.com; "
+                "telefone (11) 91234-5678; outro 11987654321",
+            )
+        ],
+        ["conversa_id", "texto"],
     )
-    anonimizado = anonimizar_texto(df, salt="segredo", modo="nativo").collect()[0].texto
+    nativo = anonimizar_texto(df, salt="segredo", modo="nativo").collect()[0].texto
+    python = anonimizar_texto(df, salt="segredo", modo="python").collect()[0].texto
 
-    assert "123.456.789-00" not in anonimizado
-    assert anonimizado.count("[CPF_") == 2
-    assert anonimizado.split("[CPF_")[1][:10] != anonimizado.split("[CPF_")[2][:10]
+    assert nativo == python
+    assert nativo.count("[EMAIL_") == 2
+    assert nativo.count("[TELEFONE_") == 2
+    emails = [part.split("]")[0] for part in nativo.split("[") if part.startswith("EMAIL_")]
+    telefones = [part.split("]")[0] for part in nativo.split("[") if part.startswith("TELEFONE_")]
+    assert emails[0] == emails[1]
+    assert telefones[0] != telefones[1]
 
 
 def test_dataset_avaliacao_filtra_teste_e_cria_referencia(spark):

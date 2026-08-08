@@ -13,9 +13,14 @@ _PADRAO_COMBINADO = "|".join(f"(?P<{tipo}>{PADROES[tipo]})" for tipo in _ORDEM_P
 
 def _substituidor_nativo(tipo: str, salt: str):
     def substituir(acumulado, valor):
+        padrao_literal = F.regexp_replace(
+            valor,
+            r"([\\.\[\]{}()*+?^$|])",
+            r"\\$1",
+        )
         return F.regexp_replace(
             acumulado,
-            valor,
+            padrao_literal,
             F.concat(
                 F.lit(f"[{tipo.upper()}_"),
                 F.substring(F.sha2(F.concat(F.lit(salt), valor), 256), 1, 10),

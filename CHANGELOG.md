@@ -6,6 +6,14 @@ o projeto segue [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+## [0.2.7] - 2026-08-08
+
+### Fixed
+
+- Escapa valores de PII antes de usá-los como padrão de substituição no modo
+  nativo, evitando que metacaracteres de e-mails, CPFs e telefones alterem o
+  casamento da expressão regular.
+
 ## [0.2.6] - 2026-08-08
 
 ### Fixed
