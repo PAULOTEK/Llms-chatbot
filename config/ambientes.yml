@@ -9,6 +9,9 @@ dev:
     starting_offsets: latest
     max_offsets_per_trigger: 1000
     security_protocol: PLAINTEXT
+  ingestao:
+    fonte: sintetica
+    quantidade_sintetica: 10
 hml:
   catalogo: conversas_hml
   schemas: {bronze: bronze, silver: silver, gold: gold, governanca: governanca}

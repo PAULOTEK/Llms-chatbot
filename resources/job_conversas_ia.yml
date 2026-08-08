@@ -13,6 +13,8 @@ resources:
           default: ${bundle.target}
         - name: data_execucao
           default: "{{job.start_time.iso_date}}"
+        - name: raiz_projeto
+          default: ${workspace.file_path}
       email_notifications:
         on_failure:
           - dados@exemplo.com
@@ -20,38 +22,38 @@ resources:
         - task_key: ingestao_bronze
           notebook_task:
             notebook_path: ../notebooks/01_ingestao_bronze.py
-            base_parameters: {ambiente: "{{job.parameters.ambiente}}", data_execucao: "{{job.parameters.data_execucao}}"}
+            base_parameters: {ambiente: "{{job.parameters.ambiente}}", data_execucao: "{{job.parameters.data_execucao}}", raiz_projeto: "{{job.parameters.raiz_projeto}}"}
           environment_key: serverless
         - task_key: silver_normalizacao_lgpd
           depends_on: [{task_key: ingestao_bronze}]
           notebook_task:
             notebook_path: ../notebooks/02_silver_normalizacao_lgpd.py
-            base_parameters: {ambiente: "{{job.parameters.ambiente}}", data_execucao: "{{job.parameters.data_execucao}}"}
+            base_parameters: {ambiente: "{{job.parameters.ambiente}}", data_execucao: "{{job.parameters.data_execucao}}", raiz_projeto: "{{job.parameters.raiz_projeto}}"}
           environment_key: serverless
         - task_key: qualidade_quarentena
           depends_on: [{task_key: silver_normalizacao_lgpd}]
           notebook_task:
             notebook_path: ../notebooks/03_qualidade_quarentena.py
-            base_parameters: {ambiente: "{{job.parameters.ambiente}}", data_execucao: "{{job.parameters.data_execucao}}"}
+            base_parameters: {ambiente: "{{job.parameters.ambiente}}", data_execucao: "{{job.parameters.data_execucao}}", raiz_projeto: "{{job.parameters.raiz_projeto}}"}
           environment_key: serverless
         - task_key: gold_analitico
           depends_on: [{task_key: qualidade_quarentena}]
           notebook_task:
             notebook_path: ../notebooks/04_gold_analitico.py
-            base_parameters: {ambiente: "{{job.parameters.ambiente}}", data_execucao: "{{job.parameters.data_execucao}}"}
+            base_parameters: {ambiente: "{{job.parameters.ambiente}}", data_execucao: "{{job.parameters.data_execucao}}", raiz_projeto: "{{job.parameters.raiz_projeto}}"}
           environment_key: serverless
         - task_key: gold_datasets_ia
           depends_on: [{task_key: gold_analitico}]
           notebook_task:
             notebook_path: ../notebooks/05_gold_datasets_ia.py
-            base_parameters: {ambiente: "{{job.parameters.ambiente}}", data_execucao: "{{job.parameters.data_execucao}}"}
+            base_parameters: {ambiente: "{{job.parameters.ambiente}}", data_execucao: "{{job.parameters.data_execucao}}", raiz_projeto: "{{job.parameters.raiz_projeto}}"}
           environment_key: serverless
       environments:
         - environment_key: serverless
           spec:
-            # Client 1 é a versão conservadora documentada para environments
-            # de Serverless Jobs; a wheel é instalada uma única vez aqui.
-            client: "1"
+            # Client 2 é o canal recomendado para Serverless Jobs; Client 1
+            # falha em workspaces que não suportam o canal de REPL legado.
+            client: "2"
             dependencies: ["../dist/*.whl"]
     job_conversas_ia_streaming:
       name: conversas-ia-streaming-available-now
@@ -66,6 +68,8 @@ resources:
           default: ${bundle.target}
         - name: data_execucao
           default: "{{job.start_time.iso_date}}"
+        - name: raiz_projeto
+          default: ${workspace.file_path}
       email_notifications:
         on_failure:
           - dados@exemplo.com
@@ -76,10 +80,11 @@ resources:
             base_parameters:
               ambiente: "{{job.parameters.ambiente}}"
               data_execucao: "{{job.parameters.data_execucao}}"
+              raiz_projeto: "{{job.parameters.raiz_projeto}}"
           environment_key: serverless
       environments:
         - environment_key: serverless
           spec:
-            # Client 1 é a versão conservadora documentada para Serverless Jobs.
-            client: "1"
+            # Client 2 é o canal recomendado para Serverless Jobs.
+            client: "2"
             dependencies: ["../dist/*.whl"]

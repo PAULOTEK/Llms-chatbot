@@ -11,6 +11,10 @@ def criar_sessao(
     Configurações como shuffle devem ser aplicadas apenas por chamadas locais,
     normalmente pela fixture de testes, e nunca como padrão de produção.
     """
+    sessao_ativa = SparkSession.getActiveSession()
+    if sessao_ativa is not None:
+        return sessao_ativa
+
     builder = SparkSession.builder.appName(app_name)
     if local:
         for chave, valor in (configuracoes_locais or {}).items():

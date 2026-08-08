@@ -6,6 +6,16 @@ o projeto segue [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-08-08
+
+### Fixed
+
+- Usa o canal Client 2 nos ambientes Serverless.
+- Passa a raiz do Bundle aos notebooks para localizar configurações sem
+  depender de caminhos de Repos.
+- Inicializa os objetos básicos do Unity Catalog e usa dados sintéticos quando
+  a fonte externa de ingestão não está configurada.
+
 ## [0.2.3] - 2026-08-08
 
 ### Fixed
